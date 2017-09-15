@@ -34,7 +34,10 @@ class Apple:
 		return self._applerect.colliderect(self._snake.get_head())
 		
 	def draw(self):
-		pygame.draw.rect(self._surface, BLUE, self._applerect, 0)
+		r = self._node_size//2
+		x = self._applerect.x + r
+		y = self._applerect.y + r
+		pygame.draw.circle(self._surface, BLUE, (x,y),r , 0)
 
 class Snake:
 
@@ -127,7 +130,7 @@ class App:
 		self._top_panel = None
 		self._game_surf = None
 		self._snake = None
-		self._init_length = 10
+		self._init_length = 40
 		self._game_over = False
 		self._font_go = None
 		self._font_stats = None
@@ -169,6 +172,8 @@ class App:
 		self._snake = Snake(surface = self._game_surf, node_size = self.node_size, init_length = self._init_length)
 		self._apple = Apple(surface = self._game_surf, node_size = self.node_size, snake = self._snake)
 		self._running = True
+		self._game_over = False
+		self._paused = False
 		
 	def on_event(self,event):
 		if event.type == KEYUP:
@@ -183,8 +188,8 @@ class App:
 			elif (event.key == K_r):
 				self._apple.reposition()
 			elif (event.key == K_SPACE) and self._game_over:
-				self._snake = Snake(surface = self._game_surf, node_size = self.node_size, init_length = self._init_length)
-				self._game_over = False
+				# restart
+				self.on_init()
 				
 		elif event.type == KEYDOWN:
 			if (event.key == K_RIGHT):
@@ -195,6 +200,10 @@ class App:
 				self._snake.change_direction(Snake.UP)
 			elif (event.key == K_DOWN):
 				self._snake.change_direction(Snake.DOWN)
+			elif (event.key == K_p) and self._paused:
+				self._paused = False
+			elif (event.key == K_p):
+				self._paused = True
 				
 		elif event.type == QUIT:
 			self._running = False
@@ -246,8 +255,9 @@ class App:
 			for event in pygame.event.get():
 				self.on_event(event)			
 			
-			self.on_loop()
-			self.on_render()
+			if not self._paused:
+				self.on_loop()
+				self.on_render()
 			time.sleep (20.0 / 1000.0)
             
 		self.on_cleanup()
