@@ -257,7 +257,7 @@ class App:
 			
 			if not self._paused:
 				self.on_loop()
-				self.on_render()
+			self.on_render()
 			time.sleep (20.0 / 1000.0)
             
 		self.on_cleanup()
