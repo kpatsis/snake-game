@@ -93,7 +93,13 @@ class Snake:
 		
 			
 	def change_direction(self, direction):
-		self._direction = direction
+		# check if the new direction is not the opposite of or same 
+		# as the current direction
+		same = ( self._direction == direction )
+		opposite = ( sorted([self._direction,direction]) == sorted([Snake.RIGHT, Snake.LEFT]) ) \
+				or ( sorted([self._direction,direction]) == sorted([Snake.DOWN, Snake.UP]) )
+		if not (same or opposite):			
+			self._direction = direction
 		
 	def increase_speed(self):
 		self.slowness = self.slowness - 1
