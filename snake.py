@@ -4,11 +4,17 @@ from pygame.locals import *
 import time
 import random
 
-BLACK = ( 0, 0, 0)
+BLACK = ( 41, 6, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+CREME = (255, 242, 202)
+BURGUNDY = (170, 75, 57)
+RED_DARK = (106, 24, 11)
+LIME = (91, 121, 17)
+OLIVE = (106, 82, 11)
+BLUE_DARK = (54, 51, 119)
 
 class Apple:
 
@@ -33,11 +39,11 @@ class Apple:
 	def check_collision(self):
 		return self._applerect.colliderect(self._snake.get_head())
 		
-	def draw(self):
+	def draw(self, color, solid=True):
 		r = self._node_size//2
 		x = self._applerect.x + r
 		y = self._applerect.y + r
-		pygame.draw.circle(self._surface, BLUE, (x,y),r , 0)
+		pygame.draw.circle(self._surface, color, (x,y),r , 0 if solid else 1)
 
 class Snake:
 
@@ -114,9 +120,9 @@ class Snake:
 	def get_head(self):
 		return self._nodes[0]
 	
-	def draw(self):
+	def draw(self, color, solid = True):
 		for i in range(0,len(self._nodes)):
-			pygame.draw.rect(self._surface, RED, self._nodes[i], 1)
+			pygame.draw.rect(self._surface, color, self._nodes[i], 0 if solid else 1)
 			
 
 class App:
@@ -220,20 +226,20 @@ class App:
 		
 	def on_render(self):
 		self._display_surf.fill(BLACK)
-		self._top_panel.fill(GREEN)
+		self._top_panel.fill(OLIVE)
 		self._display_surf.blit(self._top_panel,(0,0))
-		self._game_surf.fill(WHITE)
-		self._snake.draw()
-		self._apple.draw()
+		self._game_surf.fill(CREME)
+		self._snake.draw(BURGUNDY,True)
+		self._apple.draw(LIME,True)
 		self._display_surf.blit(self._game_surf,(0,self._top_panel.get_height()))
 		
 		self.render_text(self._font_stats, 'L:{} S:{}'.format(self._snake.get_length(), self._snake.slowness),
 						WHITE, x=5, centery=self._top_panel.get_height()/2)
 		
 		if self._game_over:
-			self.render_text(self._font_go,"GAME OVER",RED,
+			self.render_text(self._font_go,"GAME OVER",RED_DARK,
 							center=(self._window_width/2, self._window_height/2))
-			self.render_text(self._font_mess,"Press SPACE to restart or ESC to exit",RED,
+			self.render_text(self._font_mess,"Press SPACE to restart or ESC to exit",RED_DARK,
 							centerx=self._window_width/2,y=self._window_height-self._font_mess.get_height())
 		pygame.display.flip()
 		
